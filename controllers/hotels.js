@@ -82,7 +82,10 @@ module.exports.updateHotel = async (req, res) => {
 
 module.exports.deleteHotel = async (req, res) => {
   const { id } = req.params;
-  await Hotel.findByIdAndDelete(id);
+  const hotel = await Hotel.findByIdAndDelete(id);
+  for (let image of hotel.images) {
+    await cloudinary.uploader.destroy(image.filename);
+  }
   req.flash("success", "Successfully deleted hotel");
   res.redirect("/hotels");
 };
