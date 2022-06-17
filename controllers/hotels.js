@@ -37,6 +37,9 @@ module.exports.showHotel = async (req, res) => {
   const hotel = await Hotel.findById(req.params.id)
     .populate({
       path: "reviews",
+      options: {
+        sort: { _id: -1 }, //here we are sorting the reviews so as the most recent one comes on top
+      },
       populate: {
         path: "author",
       },

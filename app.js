@@ -2,6 +2,9 @@ if (process.env.NODE_ENV !== "production") {
   require("dotenv").config();
 }
 
+const Hotel = require("./models/hotel");
+const Review = require("./models/review");
+
 const express = require("express");
 const path = require("path");
 const mongoose = require("mongoose");
@@ -18,6 +21,7 @@ const mongoSanitize = require("express-mongo-sanitize");
 const userRoutes = require("./routes/users");
 const hotelRoutes = require("./routes/hotels");
 const reviewRoutes = require("./routes/reviews");
+const hotel = require("./models/hotel");
 
 const MongoDBStore = require("connect-mongo")(session);
 
@@ -144,6 +148,25 @@ app.use("/hotels/:id/reviews", reviewRoutes);
 
 app.get("/", (req, res) => {
   res.render("home");
+});
+
+app.get("/results", async (req, res) => {
+  const { search_query } = req.query;
+  //console.log(req.query);
+  const hotels = await Hotel.find({
+    title: { $regex: search_query, $options: "i" },
+  });
+  //console.log(hotels);
+  {
+    search_query.length &&
+      hotels.length !== 0 &&
+      res.render("search", { hotels, search_query });
+  }
+
+  {
+    req.flash("error", "No matchng Hotel found");
+    res.redirect("/hotels");
+  }
 });
 
 app.all("*", (req, res, next) => {

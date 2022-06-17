@@ -38,11 +38,13 @@
         <p class="card-text"><%= hotel.description%></p>
       </div>
       <ul class="list-group list-group-flush">
-        <li class="list-group-item text-muted"><%= hotel.location%></li>
+        <li class="list-group-item text-muted">
+          Location : <%= hotel.location%>
+        </li>
         <li class="list-group-item">
           Submitted by <%= hotel.author.username%>
         </li>
-        <li class="list-group-item">$<%= hotel.price%>/night</li>
+        <li class="list-group-item">Price : &#8377;<%= hotel.price%>/night</li>
       </ul>
       <% if( currentUser && hotel.author.equals(currentUser._id)) {%>
       <div class="card-body">
